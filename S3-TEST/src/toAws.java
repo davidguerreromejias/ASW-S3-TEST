@@ -11,6 +11,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -45,9 +46,27 @@ public class toAws {
 		
 		downloadFileFromBucket(buckets.get(0).getName());
 		uploadFiletoBucket(buckets.get(0).getName());
+		deleteFileFromBucket(buckets.get(0).getName());
 		
 	}
 	
+	private static void deleteFileFromBucket(String bucketName) {
+		
+		try {
+            s3client.deleteObject(new DeleteObjectRequest(bucketName, "prueba"));
+        }
+        catch(AmazonServiceException e) {
+            // The call was transmitted successfully, but Amazon S3 couldn't process 
+            // it, so it returned an error response.
+            e.printStackTrace();
+        }
+        catch(SdkClientException e) {
+            // Amazon S3 couldn't be contacted for a response, or the client
+            // couldn't parse the response from Amazon S3.
+            e.printStackTrace();
+        }
+	}
+
 	private static void uploadFiletoBucket(String bucketName) throws IOException {
 		
         try {
