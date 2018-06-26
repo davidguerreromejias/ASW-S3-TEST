@@ -5,12 +5,16 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -40,9 +44,32 @@ public class toAws {
 		}
 		
 		downloadFileFromBucket(buckets.get(0).getName());
+		uploadFiletoBucket(buckets.get(0).getName());
 		
 	}
 	
+	private static void uploadFiletoBucket(String bucketName) throws IOException {
+		
+        try {
+        	PutObjectRequest request = new PutObjectRequest(bucketName, "prueba", new File("C:\\Users\\Lenovo\\Documents\\prueba.csv"));
+    		ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("plain/text");
+            metadata.addUserMetadata("x-amz-meta-title", "prueba");
+            request.setMetadata(metadata);
+            s3client.putObject(request);
+        }
+        catch(AmazonServiceException e) {
+            // The call was transmitted successfully, but Amazon S3 couldn't process 
+            // it, so it returned an error response.
+            e.printStackTrace();
+        }
+        catch(SdkClientException e) {
+            // Amazon S3 couldn't be contacted for a response, or the client
+            // couldn't parse the response from Amazon S3.
+            e.printStackTrace();
+        }
+	}
+
 	private static List<String> getObjectslistFromFolder(String bucketName, String folderKey) {
 		
 		  ListObjectsRequest listObjectsRequest = 
