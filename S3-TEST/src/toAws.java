@@ -47,9 +47,17 @@ public class toAws {
 		downloadFileFromBucket(buckets.get(0).getName());
 		uploadFiletoBucket(buckets.get(0).getName());
 		deleteFileFromBucket(buckets.get(0).getName());
+		getMetadataFileFromBucket(buckets.get(0).getName());
 		
 	}
 	
+	private static void getMetadataFileFromBucket(String bucketName) {
+		
+		S3Object s3Object = s3client.getObject(bucketName, "Unsaved/2017/10/18/fce039be-774e-40e1-acec-5669b948b70e.csv");
+		ObjectMetadata s3ObjectMetadata = s3Object.getObjectMetadata();
+		System.out.println(s3ObjectMetadata.getRawMetadata());
+	}
+
 	private static void deleteFileFromBucket(String bucketName) {
 		
 		try {
